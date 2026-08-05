@@ -533,6 +533,7 @@ end
 function Option:_get_usage()
   local usage = self:_get_argument_list()
   table.insert(usage, 1, self._name)
+  ---@diagnostic disable-next-line
   usage = table.concat(usage, " ")
 
   if self._mincount == 0 or self._default then
@@ -837,7 +838,7 @@ local function autowrap_line(line, max_length)
 
     if (#line_parts == 0) or (line_length + #preceding_spaces + #word <= max_length) then
       -- Either this is the very first word or it fits as an addition to the current line, add it.
-      table.insert(line_parts, preceding_spaces)    -- For the very first word this adds the indentation.
+      table.insert(line_parts, preceding_spaces) -- For the very first word this adds the indentation.
       table.insert(line_parts, word)
       line_length = line_length + #preceding_spaces + #word
     else
@@ -1328,6 +1329,7 @@ end
 function ParseState:invoke(option, name)
   self:close()
   option:set_name(name)
+  ---@diagnostic disable-next-line
   self:check_mutexes(option, name)
 
   if option:invoke() then

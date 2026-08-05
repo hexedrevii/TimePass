@@ -36,7 +36,7 @@ add:option("-d --date", "The date (dd/mm/yyyy)"):args(1)
 add:option("-n --name", "The name"):args(1)
 --#endregion Args
 
-local result = args:parse()
+local result = args:parse(arg)
 
 if result.add then
   if not result.name or not result.date then

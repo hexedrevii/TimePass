@@ -25,7 +25,7 @@ local args = Parser("TimePass", "Track stuff!")
 
 local list = args:command("list")
 list:flag("-a --all", "List every entry")
-list:flag("-i --id", "List entry by ID")
+list:option("-i --id", "List entry by ID")
 
 local remove = args:command("remove")
 remove:option("-n --name", "Remove by name")
@@ -62,6 +62,46 @@ if result.add then
   end
 end
 
+if result.remove then
+  if result.name then
+    for i, model in ipairs(data) do
+      if result.name == model.name then
+        table.remove(data, i)
+        local file = io.open(dataPath, "w")
+        if file then
+          local json = Json.encode(data)
+          file:write(json)
+
+          print("Successfully removed entry " .. result.name .. ".")
+          file:close()
+        else
+          args:error("Could not open file " .. dataPath)
+        end
+
+        break
+      end
+    end
+  elseif result.id then
+    for i, model in ipairs(data) do
+      if tonumber(result.id) == model.id then
+        table.remove(data, i)
+        local file = io.open(dataPath, "w")
+        if file then
+          local json = Json.encode(data)
+          file:write(json)
+
+          print("Successfully removed entry with id " .. result.id .. ".")
+          file:close()
+        else
+          args:error("Could not open file " .. dataPath)
+        end
+
+        break
+      end
+    end
+  end
+end
+
 if result.list then
   if result.all then
     local now = os.time()
@@ -71,6 +111,14 @@ if result.list then
 
       if i ~= #data then
         print()
+      end
+    end
+  elseif result.id then
+    local now = os.time()
+    for _, model in ipairs(data) do
+      if tonumber(result.id) == model.id then
+        local time_string = Time.formatTime(model, now)
+        print(model.name .. " " .. model.date .. "\n - " .. time_string)
       end
     end
   end
